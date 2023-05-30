@@ -17,9 +17,10 @@ public class VistaTablero extends JPanel {
     torreBlanca1, torreBlanca2, caballoBlanco1, caballoBlanco2, alfilBlanco1, alfilBlanco2, reinaBlanca, reyBlanco;
     
     Casilla [] casillas;
+    JFrame frame;
     
     public VistaTablero() {
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setSize(900, 700);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -41,7 +42,6 @@ public class VistaTablero extends JPanel {
 			}	
 		}
 		
-        
         frame.setVisible(true);
     }
 
@@ -65,11 +65,10 @@ public class VistaTablero extends JPanel {
                 g.clearRect(i, j, 50, 50);
             }
         }
+        
         g.setColor(Color.black);
         g.drawString("Nombre jugador 1", 600, 100);
         g.drawString("Nombre jugador 2", 600, 500);
-        
-        
         
         try {
             File archivoImgPeonBlanco = new File("imagenes/peonBlanco.png");
@@ -120,13 +119,6 @@ public class VistaTablero extends JPanel {
             System.out.println("Error al leer la imagen: " + e);
         }
         
-   
-       
-    }
-    
-    public static void main (String[] args) {
-    	
-    	new VistaTablero();
     }
 }
 

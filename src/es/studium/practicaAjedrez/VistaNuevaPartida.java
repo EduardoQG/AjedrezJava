@@ -5,9 +5,13 @@ import java.awt.Frame;
 import java.awt.Label;
 import java.awt.TextField;
 
-public class VistaNuevaPartida {
+public class VistaNuevaPartida extends Frame {
 	
-	Frame ventana = new Frame("Nueva Partida");
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	Label lblJug1 = new Label("Jugador 1");
 	Label lblJug2 = new Label("Jugador 2");
 	TextField txtJug1 = new TextField(10);
@@ -16,23 +20,23 @@ public class VistaNuevaPartida {
 	Button btnVolver = new Button("Volver");
 
 	VistaNuevaPartida() {
-		ventana.setSize(300, 200);
-		ventana.setLayout(null);
-		ventana.add(lblJug1);
+		setSize(300, 200);
+		setLayout(null);
+		add(lblJug1);
 		lblJug1.setBounds(50, 50, 55, 20);
-		ventana.add(lblJug2);
+		add(lblJug2);
 		lblJug2.setBounds(50, 80, 55, 20);
-		ventana.add(txtJug1);
+		add(txtJug1);
 		txtJug1.setBounds(110, 50, 100, 20);
-		ventana.add(txtJug2);
+		add(txtJug2);
 		txtJug2.setBounds(110, 80, 100, 20);
-		ventana.add(btnComenzar);
+		add(btnComenzar);
 		btnComenzar.setBounds(110, 120, 100, 20);
-		ventana.add(btnVolver);
+		add(btnVolver);
 		btnVolver.setBounds(135, 150, 50, 20);
 
-		ventana.setResizable(false);
-		ventana.setLocationRelativeTo(null);
-		ventana.setVisible(true);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 }

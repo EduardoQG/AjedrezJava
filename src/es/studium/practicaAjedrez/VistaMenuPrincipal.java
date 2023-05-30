@@ -1,33 +1,39 @@
 package es.studium.practicaAjedrez;
 
-import java.awt.Button;
 import java.awt.Frame;
-import java.awt.Label;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 
-public class VistaMenuPrincipal {
-	Frame ventana = new Frame("Menú Principal");
-	Label lblMenu = new Label("MENÚ PRINCIPAL");
-	Button btnPartida = new Button("Partida Nueva");
-	Button btnRanking = new Button("Ranking");
-	Button btnAyuda = new Button("Ayuda");
-	Button btnSalir = new Button("Salir");
+public class VistaMenuPrincipal extends Frame {
+	
+	private static final long serialVersionUID = 1L;
+	Image jugar, help, rank, salir, menu, chessfight;
+	Toolkit herramienta;
 
 	VistaMenuPrincipal() {
-		ventana.setSize(500, 300);
-		ventana.setLayout(null);
-		ventana.add(lblMenu);
-		lblMenu.setBounds(200, 50, 100, 20);
-		ventana.add(btnPartida);
-		btnPartida.setBounds(200, 80, 100, 20);
-		ventana.add(btnRanking);
-		btnRanking.setBounds(200, 120, 100, 20);
-		ventana.add(btnAyuda);
-		btnAyuda.setBounds(200, 160, 100, 20);
-		ventana.add(btnSalir);
-		btnSalir.setBounds(225, 200, 50, 20);
+		
+		setSize(1200, 675);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		herramienta = getToolkit();
+		chessfight = herramienta.getImage("imagenes\\chessfight.jpeg");
+		jugar = herramienta.getImage("imagenes\\jugar.jpg");
+		help = herramienta.getImage("imagenes\\help.jpg");
+		rank = herramienta.getImage("imagenes\\rank.jpg");
+		salir = herramienta.getImage("imagenes\\salir.jpg");
+		menu = herramienta.getImage("imagenes\\menu.jpg");
+		setVisible(true);
+	}
 
-		ventana.setResizable(false);
-		ventana.setLocationRelativeTo(null);
-		ventana.setVisible(true);
+	public void paint(Graphics g) {
+		// Dibujar la imagen
+		g.drawImage(chessfight, 0, 0, this);
+		g.drawImage(menu, 400, 75, this);
+		g.drawImage(jugar, 479, 180, this);
+		g.drawImage(help, 479, 260, this);
+		g.drawImage(rank, 479, 340, this);
+		g.drawImage(salir, 479, 420, this);
+
 	}
 }
