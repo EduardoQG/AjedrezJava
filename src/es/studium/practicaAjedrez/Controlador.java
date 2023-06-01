@@ -4,20 +4,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
-
-
 public class Controlador implements WindowListener, MouseListener {
-	
+
 	ModeloAjedrez modelo;
 	VistaMenuPrincipal menuPrincipal;
 	VistaTablero tablero;
 	VistaRanking ranking;
-	
-	File sf = new File("images/ubuntu.wav");
+
+	boolean partidaTerminada;
 
 	Controlador(ModeloAjedrez m, VistaMenuPrincipal mp) {
-		
+
 		this.modelo = m;
 		this.menuPrincipal = mp;
 
@@ -26,7 +23,8 @@ public class Controlador implements WindowListener, MouseListener {
 	}
 
 	@Override
-	public void windowOpened(WindowEvent e) {}
+	public void windowOpened(WindowEvent e) {
+	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
@@ -34,12 +32,10 @@ public class Controlador implements WindowListener, MouseListener {
 		if (tablero != null && tablero.frame.isActive()) {
 			tablero.frame.setVisible(false);
 		}
-		
-		else if (ranking != null && ranking.isActive())
-		{
+
+		else if (ranking != null && ranking.isActive()) {
 			ranking.setVisible(false);
-		}
-		 else {
+		} else {
 			System.exit(0);
 		}
 
@@ -75,26 +71,49 @@ public class Controlador implements WindowListener, MouseListener {
 				tablero = new VistaTablero();
 				this.tablero.frame.addWindowListener(this);
 				this.tablero.frame.addMouseListener(this);
+				partidaTerminada = false;
+
 			} else if (x > 479 && x < 671 && y > 260 && y < 322) {
-				
+				// Se abre fichero ayuda.
 			} else if (x > 479 && x < 671 && y > 340 && y < 402) {
 				ranking = new VistaRanking();
 				this.ranking.addWindowListener(this);
 			} else if (x > 479 && x < 671 && y > 420 && y < 482) {
 				System.exit(0);
 			}
+
+		} else if (tablero.frame.isActive()) {
+
+			while (partidaTerminada == false) {
+
+				/*
+				 	Le toca al jugador blanco, este debe hacer click en una celda. Para que se mueva
+				 	la ficha, debe clickar en una celda ocupada, cuya ficha sea blanca.
+				 	*Se podría hacer que la celda pulsada cambie un poco de color si se cumplen
+				 	las condiciones.
+				 	
+				 	Si estas condiciones se cumplen, debe pulsar en la celda donde quiere mover la ficha,
+				 	esta celda debe entrar en el rango de movimiento de la ficha, y además no debe haber
+				 	otras fichas por en medio (salvo en el caso del caballo).
+				 */
+
+			}
 		}
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {
+	}
 }
