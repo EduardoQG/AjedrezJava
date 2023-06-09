@@ -63,5 +63,23 @@ public class ModeloAjedrez {
 			System.out.println("Error 5-" + sqle.getMessage());
 		}
 	}
+
+
+	public Casilla getCasillaSeleccionada(Controlador controlador, int xPulsada, int yPulsada) {
+	
+		Casilla casillaSeleccionada = null;
+		// Buscar la casilla donde se encuentran las coordenadas.
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+	
+				if (xPulsada > (controlador.tablero.casillas[i][j].x + 0) && xPulsada < (controlador.tablero.casillas[i][j].x + 50)
+						&& yPulsada > (controlador.tablero.casillas[i][j].y + 0) && yPulsada < (controlador.tablero.casillas[i][j].y + 50)) {
+	
+					casillaSeleccionada = controlador.tablero.casillas[i][j];
+				}
+			}
+		}
+		return casillaSeleccionada;
+	}
 		
 }

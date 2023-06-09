@@ -4,19 +4,16 @@ public class Pruebas {
 
     public static void main(String[] args) {
        
-    	VistaTablero t = new VistaTablero();
+    	VistaTablero tablero = new VistaTablero();
     	
-    	System.out.println(t.peonBlanco1.getEsBlanca());
-    	System.out.println(t.peonBlanco1.getCasillaActual().x + " " + t.peonBlanco1.getCasillaActual().y);
-    	System.out.println(t.casillas[1][0].getOcupada());
-    	System.out.println(t.casillas[3][3].getOcupada());
-    	
-    	t.moverFicha(t.peonBlanco1, t.casillas[3][3]);
-    	
-    	System.out.println(t.peonBlanco1.getCasillaActual().x + " " + t.peonBlanco1.getCasillaActual().y);
-    	System.out.println(t.casillas[1][0].getOcupada());
-    	System.out.println(t.casillas[3][3].getOcupada());
-    }
+    	for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+
+				System.out.println("Soy la casilla " + i + j + ""
+						+ " y mis coordenadas son " + tablero.casillas[i][j].x + " " + tablero.casillas[i][j].y);
+				}
+			}
+		}
 }
 
 	

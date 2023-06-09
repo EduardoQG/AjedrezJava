@@ -8,25 +8,27 @@ public class Ficha {
 	private BufferedImage imagenFicha;
 	private Casilla casillaActual;
 	private boolean esBlanca;
+	private boolean viva;
 	
 	public Ficha (BufferedImage imagenFicha, String tipoFicha, boolean esBlanca) {
 		this.imagenFicha = imagenFicha;
 		this.tipoFicha = tipoFicha;
 		this.esBlanca = esBlanca;
+		viva = true;
 	}
 
 	public Casilla getCasillaActual() {
 		return casillaActual;
 	}
 
-	
 	public void setCasillaActual(Casilla casillaActual) {
-		// La antigua casilla pasa a estar vacía.
-		this.casillaActual.setOcupada(false);
-		// Se establece la nueva casilla.
+		
+		if (this.casillaActual != null) {
+			this.casillaActual.setFicha(null);
+		}
+		
 		this.casillaActual = casillaActual;
-		// La nueva casilla pasa a estar ocupada.
-		casillaActual.setOcupada(true);
+		this.casillaActual.setFicha(this);
 	}
 
 	public BufferedImage getImagenFicha() {
@@ -40,6 +42,21 @@ public class Ficha {
 	public boolean getEsBlanca () {
 		return esBlanca;
 	}
+
+	public boolean getViva() {
+		return viva;
+	}
+
+	public void setViva(boolean viva) {
+		this.viva = viva;
+	}
+	
+	public void morir () {
+		imagenFicha = null;
+		this.setViva(false);
+	}
+
+	
 	
 	
 	

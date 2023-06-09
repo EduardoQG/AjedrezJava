@@ -25,10 +25,7 @@ public class VistaTablero extends JPanel {
 		frame.setSize(900, 700);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
-		frame.getContentPane().add(this);
-		frame.setBackground(Color.LIGHT_GRAY);
-
-		// Crear las casillas:
+		
 		casillas = new Casilla[8][8];
 
 		int x = 100, y = 100;
@@ -53,7 +50,7 @@ public class VistaTablero extends JPanel {
 			peonBlanco1 = new Ficha(ImageIO.read(archivoImgPeonBlanco), "peon", true);
 			// Se sitúa la ficha en la casilla inicial.
 			peonBlanco1.setCasillaActual(casillas[1][0]);
-
+			
 			peonBlanco2 = new Ficha(ImageIO.read(archivoImgPeonBlanco), "peon", true);
 			peonBlanco2.setCasillaActual(casillas[1][1]);
 			peonBlanco3 = new Ficha(ImageIO.read(archivoImgPeonBlanco), "peon", true);
@@ -130,9 +127,16 @@ public class VistaTablero extends JPanel {
 			File archivoImgReinaNegra = new File("imagenes/reinaNegra.png");
 			reinaNegra = new Ficha(ImageIO.read(archivoImgReinaNegra), "reina", false);
 			reinaNegra.setCasillaActual(casillas[7][3]);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		frame.getContentPane().add(this);
+		frame.setBackground(Color.LIGHT_GRAY);
+
+		// Crear las casillas:
+		
 
 		frame.setVisible(true);
 	}
@@ -167,7 +171,7 @@ public class VistaTablero extends JPanel {
 		// SITUAR FICHAS: se pinta la imagen en las coordenadas de su casilla actual.
 		
 		// FICHAS BLANCAS:
-
+		
 		g.drawImage(peonBlanco1.getImagenFicha(), (peonBlanco1.getCasillaActual().x + 5),
 				peonBlanco1.getCasillaActual().y, this);
 
@@ -263,13 +267,6 @@ public class VistaTablero extends JPanel {
 
 		g.drawImage(reinaNegra.getImagenFicha(), (reinaNegra.getCasillaActual().x), reinaNegra.getCasillaActual().y,
 				this);
-
-	}
-
-	public void moverFicha(Ficha ficha, Casilla casilla) {
-
-		ficha.setCasillaActual(casilla);
-		repaint();
 	}
 
 }
