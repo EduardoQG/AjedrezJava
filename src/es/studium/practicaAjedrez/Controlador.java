@@ -136,6 +136,7 @@ public class Controlador implements WindowListener, MouseListener {
 		// 4.y esta casilla no está ocupada por otra ficha blanca o negra, el movimiento es válido.
 		if (fichaMover.getTipoFicha().equals("peon") && fichaMover.getEsBlanca()
 				&& casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50
+				&& casillaSeleccionada.x == fichaMover.getCasillaActual().x
 				&& casillaSeleccionada.getFicha() == null) {
 			
 				return true;
@@ -166,8 +167,8 @@ public class Controlador implements WindowListener, MouseListener {
 				(casillaSeleccionada.x == fichaMover.getCasillaActual().x &&
 				casillaSeleccionada.y != fichaMover.getCasillaActual().y)) && 
 				// el camino está vacío
-				caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x, fichaMover.getCasillaActual().y,
-						casillaSeleccionada.y) ) {
+				 caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x, 
+						 fichaMover.getCasillaActual().y, casillaSeleccionada.y) ) {
 				return true;		
 		}
 		
@@ -180,30 +181,28 @@ public class Controlador implements WindowListener, MouseListener {
 		if (ficha.getTipoFicha().equals("torre")) {
 			
 			if (oldX == newX) {
-				
-				if (oldY > newY) {
-					for (int i = oldY; i > newY; i-=50) {
+				if (oldY < newY) {
+					for (int i = oldY+50; i < newY; i+=50) {
 						if (getCasillaPorCoordenadas(oldX, i).getFicha() != null) {
 							return false;
 						}
 					}
-				} else {
-					for (int i = oldY; i < newY; i+=50) {
+				} else if (oldY > newY) {
+					for (int i = oldY-50; i > newY; i-=50) {
 						if (getCasillaPorCoordenadas(oldX, i).getFicha() != null) {
 							return false;
-					
 						}
-					}
+					}	
 				}
 			} else if (oldY == newY) {
-				if (oldX > newX) {
-					for (int i = oldX; i > newX; i-=50) {
+				if (oldX < newX) {
+					for (int i = oldX+50; i < newX; i+=50) {
 						if (getCasillaPorCoordenadas(i, oldY).getFicha() != null) {
 							return false;
 						}
 					}
-				} else {
-					for (int i = oldX; i < newX; i+=50) {
+				} else if (oldX > newX) {
+					for (int i = oldX-50; i > newX; i-=50) {
 						if (getCasillaPorCoordenadas(i, oldY).getFicha() != null) {
 							return false;
 					
