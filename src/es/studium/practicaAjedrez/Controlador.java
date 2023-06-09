@@ -129,6 +129,9 @@ public class Controlador implements WindowListener, MouseListener {
 
 	private boolean comprobarMovimientoValido(Ficha fichaMover, Casilla casillaSeleccionada) {
 
+		int movimientoX = Math.abs(casillaSeleccionada.x - fichaMover.getCasillaActual().x);
+		int movimientoY = Math.abs(casillaSeleccionada.y - fichaMover.getCasillaActual().y);
+
 		// MOVIMIENTO PEON BLANCO:
 		// Si la ficha es un 1.peon, 2.es blanca, 3.la casilla a la que la mueve es el
 		// index y - 1
@@ -158,40 +161,26 @@ public class Controlador implements WindowListener, MouseListener {
 
 		// Si la ficha a mover es una torre blanca,
 		else if (fichaMover.getTipoFicha().equals("torre") && fichaMover.getEsBlanca()
-		// el movimiento es en línea
-				&& ((casillaSeleccionada.x != fichaMover.getCasillaActual().x
-						&& casillaSeleccionada.y == fichaMover.getCasillaActual().y)
-						|| (casillaSeleccionada.x == fichaMover.getCasillaActual().x
-								&& casillaSeleccionada.y != fichaMover.getCasillaActual().y))
-				&&
-				// el camino está vacío
+				// El movimiento de un eje varía y el del otro no (movimiento en línea)
+				&& ((movimientoX == 0 && movimientoY != 0) || (movimientoX != 0 && movimientoY == 0)) && 
 				caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
 						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
 			return true;
 		}
 
-		// MOVIMIENTO CABALLO:
-		else if (fichaMover.getTipoFicha().equals("caballo") && fichaMover.getEsBlanca() &&
-		// verificar movimiento caballo:
-				// *Se podría simplificar diciendo que sea válido cuando uno varíe en 50 
-				// y otro en 100 (utilizando el valor absoluto).
-				((casillaSeleccionada.x == fichaMover.getCasillaActual().x + 100
-					&& casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50)
-				|| (casillaSeleccionada.x == fichaMover.getCasillaActual().x + 100
-					&& casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50)
-				|| (casillaSeleccionada.x == fichaMover.getCasillaActual().x - 100
-					&& casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50)
-				|| (casillaSeleccionada.x == fichaMover.getCasillaActual().x - 100
-					&& casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50)
-				|| (casillaSeleccionada.x == fichaMover.getCasillaActual().x + 50
-					&& casillaSeleccionada.y == fichaMover.getCasillaActual().y + 100)
-				|| (casillaSeleccionada.x == fichaMover.getCasillaActual().x + 50
-					&& casillaSeleccionada.y == fichaMover.getCasillaActual().y -100)
-				|| (casillaSeleccionada.x == fichaMover.getCasillaActual().x - 50
-					&& casillaSeleccionada.y == fichaMover.getCasillaActual().y + 100)
-				|| (casillaSeleccionada.x == fichaMover.getCasillaActual().x - 50
-					&& casillaSeleccionada.y == fichaMover.getCasillaActual().y - 100)
-				)) {
+		// MOVIMIENTO CABALLO BLANCO:
+		else if (fichaMover.getTipoFicha().equals("caballo") && fichaMover.getEsBlanca()
+		// Si el movimiento total de x e y suma 150 y no son 0 (movimiento en L):
+				&& movimientoX + movimientoY == 150 && movimientoX != 0 && movimientoY != 0) {
+			return true;
+		}
+
+		// MOVIMIENTO ALFIL BLANCO:
+		else if (fichaMover.getTipoFicha().equals("alfil") && fichaMover.getEsBlanca() && 
+				// Si el movimiento de una y otra suman lo mismo (movimiento diagonal)
+				(movimientoX == movimientoY)
+				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
+						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
 			return true;
 		}
 
@@ -234,7 +223,9 @@ public class Controlador implements WindowListener, MouseListener {
 
 			}
 		} else if (ficha.getTipoFicha().equals("alfil")) {
-
+			
+			
+			
 		}
 
 		return true;
