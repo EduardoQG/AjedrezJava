@@ -19,6 +19,9 @@ public class Controlador implements WindowListener, MouseListener {
 	boolean elegirMovimiento;
 	Ficha fichaMover;
 
+	int movimientoX;
+	int movimientoY;
+
 	Controlador(ModeloAjedrez m, VistaMenuPrincipal mp) {
 
 		this.modelo = m;
@@ -129,8 +132,8 @@ public class Controlador implements WindowListener, MouseListener {
 
 	private boolean comprobarMovimientoValido(Ficha fichaMover, Casilla casillaSeleccionada) {
 
-		int movimientoX = Math.abs(casillaSeleccionada.x - fichaMover.getCasillaActual().x);
-		int movimientoY = Math.abs(casillaSeleccionada.y - fichaMover.getCasillaActual().y);
+		movimientoX = Math.abs(casillaSeleccionada.x - fichaMover.getCasillaActual().x);
+		movimientoY = Math.abs(casillaSeleccionada.y - fichaMover.getCasillaActual().y);
 
 		// MOVIMIENTO PEON BLANCO:
 		// Si la ficha es un 1.peon, 2.es blanca, 3.la casilla a la que la mueve es el
@@ -161,9 +164,9 @@ public class Controlador implements WindowListener, MouseListener {
 
 		// Si la ficha a mover es una torre blanca,
 		else if (fichaMover.getTipoFicha().equals("torre") && fichaMover.getEsBlanca()
-				// El movimiento de un eje varía y el del otro no (movimiento en línea)
-				&& ((movimientoX == 0 && movimientoY != 0) || (movimientoX != 0 && movimientoY == 0)) && 
-				caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
+		// El movimiento de un eje varía y el del otro no (movimiento en línea)
+				&& ((movimientoX == 0 && movimientoY != 0) || (movimientoX != 0 && movimientoY == 0))
+				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
 						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
 			return true;
 		}
@@ -176,19 +179,41 @@ public class Controlador implements WindowListener, MouseListener {
 		}
 
 		// MOVIMIENTO ALFIL BLANCO:
-		else if (fichaMover.getTipoFicha().equals("alfil") && fichaMover.getEsBlanca() && 
-				// Si el movimiento de una y otra suman lo mismo (movimiento diagonal)
-				(movimientoX == movimientoY)
+		else if (fichaMover.getTipoFicha().equals("alfil") && fichaMover.getEsBlanca() &&
+		// Si el movimiento de una y otra suman lo mismo (movimiento diagonal):
+				(movimientoX == movimientoY) && caminoVacio(fichaMover, fichaMover.getCasillaActual().x,
+						casillaSeleccionada.x, fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
+			return true;
+
+			// MOVIMIENTO REINA BLANCA:
+		} else if (fichaMover.getTipoFicha().equals("reina") && fichaMover.getEsBlanca() &&
+		// Si el movimiento es el de la torre o el del alfil:
+				(((movimientoX == 0 && movimientoY != 0) || (movimientoX != 0 && movimientoY == 0))
+						|| (movimientoX == movimientoY))
 				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
 						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
 			return true;
-		}
+
+			// MOVIMIENTO REY BLANCO:
+		} else if (fichaMover.getTipoFicha().equals("rey") && fichaMover.getEsBlanca() &&
+		// Si el movimiento es el de la torre o el del alfil y nunca es mayor de 50 en los ejes (1 casilla):
+				(((movimientoX == 0 && movimientoY != 0) || (movimientoX != 0 && movimientoY == 0))
+						|| (movimientoX == movimientoY)) && (movimientoX <= 50 && movimientoY <= 50)
+				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
+						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
+			return true;
+
+		} 
 
 		return false;
 	}
 
 	private boolean caminoVacio(Ficha ficha, int oldX, int newX, int oldY, int newY) {
 
+		movimientoX = Math.abs(casillaSeleccionada.x - fichaMover.getCasillaActual().x);
+		movimientoY = Math.abs(casillaSeleccionada.y - fichaMover.getCasillaActual().y);
+
+		// COMPROBAR CAMINO TORRE:
 		if (ficha.getTipoFicha().equals("torre")) {
 
 			if (oldX == newX) {
@@ -222,12 +247,123 @@ public class Controlador implements WindowListener, MouseListener {
 				}
 
 			}
-		} else if (ficha.getTipoFicha().equals("alfil")) {
-			
-			
-			
-		}
 
+			// COMPROBAR CAMINO ALFIL:
+		} else if (ficha.getTipoFicha().equals("alfil")) {
+
+			if (oldX < newX) {
+				if (oldY < newY) {
+					for (int i = oldX + 50, j = oldY + 50; i < newX; i += 50) {
+						if (getCasillaPorCoordenadas(i, j).getFicha() != null) {
+							return false;
+
+						}
+						j += 50;
+					}
+				} else if (oldY > newY) {
+					for (int i = oldX + 50, j = oldY - 50; i < newX; i += 50) {
+						if (getCasillaPorCoordenadas(i, j).getFicha() != null) {
+							return false;
+						}
+						j -= 50;
+					}
+
+				}
+
+			} else if (oldX > newX) {
+				if (oldY < newY) {
+					for (int i = oldX - 50, j = oldY + 50; i > newX; i -= 50) {
+						if (getCasillaPorCoordenadas(i, j).getFicha() != null) {
+							return false;
+						}
+						j += 50;
+					}
+				} else if (oldY > newY) {
+					for (int i = oldX - 50, j = oldY - 50; i > newX; i -= 50) {
+						if (getCasillaPorCoordenadas(i, j).getFicha() != null) {
+							return false;
+						}
+						j -= 50;
+					}
+				}
+
+			}
+
+			// COMPROBAR CAMINO REINA:
+		} else if (ficha.getTipoFicha().equals("reina")) {
+
+			// MOVIMIENTO EN LÍNEA:
+			if (movimientoX == 0 || movimientoY == 0) {
+
+				if (oldX == newX) {
+					if (oldY < newY) {
+						for (int i = oldY + 50; i < newY; i += 50) {
+							if (getCasillaPorCoordenadas(oldX, i).getFicha() != null) {
+								return false;
+							}
+						}
+					} else if (oldY > newY) {
+						for (int i = oldY - 50; i > newY; i -= 50) {
+							if (getCasillaPorCoordenadas(oldX, i).getFicha() != null) {
+								return false;
+							}
+						}
+					}
+				} else if (oldY == newY) {
+					if (oldX < newX) {
+						for (int i = oldX + 50; i < newX; i += 50) {
+							if (getCasillaPorCoordenadas(i, oldY).getFicha() != null) {
+								return false;
+							}
+						}
+					} else if (oldX > newX) {
+						for (int i = oldX - 50; i > newX; i -= 50) {
+							if (getCasillaPorCoordenadas(i, oldY).getFicha() != null) {
+								return false;
+
+							}
+						}
+					}
+
+				}
+			} else if (movimientoX == movimientoY) {
+				if (oldX < newX) {
+					if (oldY < newY) {
+						for (int i = oldX + 50, j = oldY + 50; i < newX; i += 50) {
+							if (getCasillaPorCoordenadas(i, j).getFicha() != null) {
+								return false;
+							}
+							j += 50;
+						}
+					} else if (oldY > newY) {
+						for (int i = oldX + 50, j = oldY - 50; i < newX; i += 50) {
+							if (getCasillaPorCoordenadas(i, j).getFicha() != null) {
+								return false;
+							}
+							j -= 50;
+						}
+
+					}
+				} else if (oldX > newX) {
+					if (oldY < newY) {
+						for (int i = oldX - 50, j = oldY + 50; i > newX; i -= 50) {
+							if (getCasillaPorCoordenadas(i, j).getFicha() != null) {
+								return false;
+							}
+							j += 50;
+						}
+					} else if (oldY > newY) {
+						for (int i = oldX - 50, j = oldY - 50; i > newX; i -= 50) {
+							if (getCasillaPorCoordenadas(i, j).getFicha() != null) {
+								return false;
+							}
+							j -= 50;
+						}
+					}
+
+				}
+			}
+		} 
 		return true;
 	}
 
