@@ -96,6 +96,7 @@ public class Controlador implements WindowListener, MouseListener {
 				// Se abre fichero ayuda.
 			} else if (x > 479 && x < 671 && y > 340 && y < 402) {
 				ranking = new VistaRanking();
+				modelo.rellenarRanking(ranking.txtRanking);
 				this.ranking.addWindowListener(this);
 			} else if (x > 479 && x < 671 && y > 420 && y < 482) {
 				System.exit(0);
