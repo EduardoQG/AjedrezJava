@@ -63,6 +63,18 @@ public class ModeloAjedrez {
 			System.out.println("Error 5-" + sqle.getMessage());
 		}
 	}
+	
+	public void nuevoGanador (String nombre, int movimientos) {
+		
+		String sentencia = "insert into partida values (null, '" + nombre + "', " + movimientos + ");";
+		
+		try {
+			statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			statement.executeUpdate(sentencia);
+		} catch (SQLException sqle) {
+			System.out.println("Error 2-" + sqle.getMessage());
+		}
+	}
 
 
 	public Casilla getCasillaSeleccionada(Controlador controlador, int xPulsada, int yPulsada) {

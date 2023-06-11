@@ -1,7 +1,9 @@
 package es.studium.practicaAjedrez;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -19,12 +21,16 @@ public class VistaTablero extends JPanel {
 
 	Casilla[][] casillas;
 	JFrame frame;
+	String turno;
+	String jaque;
 
 	public VistaTablero() {
 		frame = new JFrame();
 		frame.setSize(900, 700);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
+		turno = "Blancas";
+		jaque = "";
 		
 		casillas = new Casilla[8][8];
 
@@ -143,7 +149,6 @@ public class VistaTablero extends JPanel {
 
 	public void paint(Graphics g) {
 
-		// super.paintComponent(g);
 		/*
 		 * FUNCIONAMIENTO CONSTRUCCIÓN TABLERO: Primero se crea un cuadrado negro de
 		 * 400x400 que comienza en la posición 100,100. El primer bucle va quitando
@@ -164,10 +169,30 @@ public class VistaTablero extends JPanel {
 			}
 		}
 
-		g.setColor(Color.black);
-		g.drawString("Nombre jugador 1", 600, 100);
-		g.drawString("Nombre jugador 2", 600, 500);
+		g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(600, 250, 200, 500);
+		
+        BufferedImage buffer = new BufferedImage(200, 100, BufferedImage.TYPE_INT_ARGB);
+        Graphics g2 = buffer.getGraphics();
+        
+        Font font = new Font("Serif", Font.BOLD, 24);
+        g2.setFont(font);
+        
+        g2.setColor(Color.BLACK);
+        g2.drawString("Turno " + turno, 0, 30);
+        g.drawImage(buffer, 600, 250, null);
+        
+        BufferedImage buffer2 = new BufferedImage(200, 100, BufferedImage.TYPE_INT_ARGB);
+        Graphics g3 = buffer2.getGraphics();
 
+        Font font2 = new Font("Serif", Font.ITALIC, 22);
+        g3.setFont(font2);
+
+        g3.setColor(Color.BLACK);
+        g3.drawString(jaque, 0, 30);
+        g.drawImage(buffer2, 638, 300, null);
+     
+        
 		// SITUAR FICHAS: se pinta la imagen en las coordenadas de su casilla actual.
 		
 		// FICHAS BLANCAS:
@@ -268,5 +293,4 @@ public class VistaTablero extends JPanel {
 		g.drawImage(reinaNegra.getImagenFicha(), (reinaNegra.getCasillaActual().x), reinaNegra.getCasillaActual().y,
 				this);
 	}
-
 }

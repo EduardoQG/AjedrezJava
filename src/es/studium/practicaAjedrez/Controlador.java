@@ -5,6 +5,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.JOptionPane;
+
 public class Controlador implements WindowListener, MouseListener {
 
 	ModeloAjedrez modelo;
@@ -21,6 +23,11 @@ public class Controlador implements WindowListener, MouseListener {
 
 	int movimientoX;
 	int movimientoY;
+
+	int movimientosBlancas;
+	int movimientosNegras;
+
+	boolean gananBlancas;
 
 	Controlador(ModeloAjedrez m, VistaMenuPrincipal mp) {
 
@@ -42,7 +49,6 @@ public class Controlador implements WindowListener, MouseListener {
 		if (tablero != null && tablero.frame.isActive()) {
 			tablero.frame.setVisible(false);
 		}
-
 		else if (ranking != null && ranking.isActive()) {
 			ranking.setVisible(false);
 		} else {
@@ -83,6 +89,8 @@ public class Controlador implements WindowListener, MouseListener {
 				this.tablero.frame.addMouseListener(this);
 				turnoBlancas = true;
 				partidaTerminada = false;
+				movimientosBlancas = 0;
+				movimientosNegras = 0;
 
 			} else if (x > 479 && x < 671 && y > 260 && y < 322) {
 				// Se abre fichero ayuda.
@@ -97,35 +105,65 @@ public class Controlador implements WindowListener, MouseListener {
 			casillaSeleccionada = modelo.getCasillaSeleccionada(this, x, y);
 
 			// Si se ha clickado en una casilla, dicha casilla no está vacía,
-			if (casillaSeleccionada != null && casillaSeleccionada.getFicha() != null) {
+			if (casillaSeleccionada != null && casillaSeleccionada.getFicha() != null
+					&& ((turnoBlancas && casillaSeleccionada.getFicha().getEsBlanca())
+							|| (!turnoBlancas && !casillaSeleccionada.getFicha().getEsBlanca()))) {
 				// y el color de la ficha corresponde con el turno,
 				if ((casillaSeleccionada.getFicha().getEsBlanca() && turnoBlancas)
-						|| !casillaSeleccionada.getFicha().getEsBlanca() && !turnoBlancas) {
+						|| (!casillaSeleccionada.getFicha().getEsBlanca() && !turnoBlancas)) {
 					// se selecciona esa ficha.
 					fichaMover = casillaSeleccionada.getFicha();
+
 				}
-				// Si ya se ha seleccionado una ficha a mover y una casilla, 
+				// Si ya se ha seleccionado una ficha a mover y una casilla,
 			} else if (fichaMover != null && casillaSeleccionada != null) {
 				// y esa casilla está vacía o tiene una ficha del color contrario.
-				if ((turnoBlancas && (casillaSeleccionada.getFicha() == null || !casillaSeleccionada.getFicha().getEsBlanca())) 
-						|| (!turnoBlancas && (casillaSeleccionada.getFicha() == null || casillaSeleccionada.getFicha().getEsBlanca()))){
-					
+				if ((turnoBlancas
+						&& (casillaSeleccionada.getFicha() == null || !casillaSeleccionada.getFicha().getEsBlanca()))
+						|| (!turnoBlancas && (casillaSeleccionada.getFicha() == null
+								|| casillaSeleccionada.getFicha().getEsBlanca()))) {
 					if (comprobarMovimientoValido(fichaMover, casillaSeleccionada)) {
-
 						if (casillaSeleccionada.getFicha() != null) {
-							casillaSeleccionada.getFicha().morir();
+							if (casillaSeleccionada.getFicha().getTipoFicha().equals("rey")) {
+								if (turnoBlancas) {
+									gananBlancas = true;
+								} else {
+									gananBlancas = false;
+								}
+								partidaTerminada = true;
+								String nombreGanador = JOptionPane.showInputDialog(null,
+										"Ganador, introduzca su nombre:", "Partida finalizada!", JOptionPane.QUESTION_MESSAGE);
+								if (turnoBlancas) {modelo.nuevoGanador(nombreGanador, movimientosBlancas);
+								} else {modelo.nuevoGanador(nombreGanador, movimientosNegras);}
+								
+
+							} else {
+								casillaSeleccionada.getFicha().morir();
+							}
 						}
 						fichaMover.setCasillaActual(casillaSeleccionada);
 						// Cambiar turno:
-						if (turnoBlancas) {turnoBlancas = false;} else { turnoBlancas = true;}
-						tablero.repaint();
-						fichaMover = null;
-						
-					}					
+
+						if (!partidaTerminada) {
+							if (turnoBlancas) {
+								turnoBlancas = false;
+								tablero.turno = "Negras";
+								movimientosBlancas++;
+							} else {
+								turnoBlancas = true;
+								tablero.turno = "Blancas";
+							}
+
+							tablero.repaint();
+							fichaMover = null;
+							movimientosNegras++;
+						}
+					}
 				}
 			}
-		}
+		} else if (tablero.frame.isActive() && partidaTerminada) {
 
+		}
 	}
 
 	private boolean comprobarMovimientoValido(Ficha fichaMover, Casilla casillaSeleccionada) {
@@ -135,24 +173,25 @@ public class Controlador implements WindowListener, MouseListener {
 
 		// MOVIMIENTO PEON:
 		if (fichaMover.getTipoFicha().equals("peon")) {
-			
-			if(fichaMover.getEsBlanca()) {
-				// Si el movimiento es de una casilla hacia abajo, y esa casilla no está ocupada.
-				if(casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50 && movimientoX == 0 
+
+			if (fichaMover.getEsBlanca()) {
+				// Si el movimiento es de una casilla hacia abajo, y esa casilla no está
+				// ocupada.
+				if (casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50 && movimientoX == 0
 						&& casillaSeleccionada.getFicha() == null) {
 					return true;
-				// Si el movimiento es una casilla en diagonal hacia abajo, y esa casilla está
-				// ocupada por una pieza del color contrario.
-				} else if (casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50 && movimientoX == 50 
+					// Si el movimiento es una casilla en diagonal hacia abajo, y esa casilla está
+					// ocupada por una pieza del color contrario.
+				} else if (casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50 && movimientoX == 50
 						&& casillaSeleccionada.getFicha() != null && !casillaSeleccionada.getFicha().getEsBlanca()) {
 					return true;
 				}
-			
+
 			} else {
-				if(casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50 && movimientoX == 0 
+				if (casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50 && movimientoX == 0
 						&& casillaSeleccionada.getFicha() == null) {
 					return true;
-				} else if (casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50 && movimientoX == 50 
+				} else if (casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50 && movimientoX == 50
 						&& casillaSeleccionada.getFicha() != null && casillaSeleccionada.getFicha().getEsBlanca()) {
 					return true;
 				}
@@ -164,7 +203,7 @@ public class Controlador implements WindowListener, MouseListener {
 
 		// Si la ficha a mover es una torre,
 		else if (fichaMover.getTipoFicha().equals("torre")
-		// El movimiento de un eje varía y el del otro no (movimiento en línea)
+				// El movimiento de un eje varía y el del otro no (movimiento en línea)
 				&& ((movimientoX == 0 && movimientoY != 0) || (movimientoX != 0 && movimientoY == 0))
 				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
 						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
@@ -173,7 +212,7 @@ public class Controlador implements WindowListener, MouseListener {
 
 		// MOVIMIENTO CABALLO:
 		else if (fichaMover.getTipoFicha().equals("caballo")
-		// Si el movimiento total de x e y suma 150 y no son 0 (movimiento en L):
+				// Si el movimiento total de x e y suma 150 y no son 0 (movimiento en L):
 				&& movimientoX + movimientoY == 150 && movimientoX != 0 && movimientoY != 0) {
 			return true;
 		}
