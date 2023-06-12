@@ -16,9 +16,14 @@ public class Ficha {
 		this.esBlanca = esBlanca;
 		viva = true;
 	}
+	
 
 	public Casilla getCasillaActual() {
 		return casillaActual;
+	}
+
+	public void setImagenFicha(BufferedImage imagenFicha) {
+		this.imagenFicha = imagenFicha;
 	}
 
 	public void setCasillaActual(Casilla casillaActual) {
@@ -54,6 +59,7 @@ public class Ficha {
 	public void morir () {
 		imagenFicha = null;
 		this.setViva(false);
+		this.setCasillaActual(null);
 	}
 
 	

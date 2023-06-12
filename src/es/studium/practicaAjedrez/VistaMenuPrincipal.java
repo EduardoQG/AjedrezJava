@@ -18,11 +18,11 @@ public class VistaMenuPrincipal extends Frame {
 		setLocationRelativeTo(null);
 		herramienta = getToolkit();
 		chessfight = herramienta.getImage("imagenes\\chessfight.jpeg");
-		jugar = herramienta.getImage("imagenes\\jugar.jpg");
-		help = herramienta.getImage("imagenes\\help.jpg");
-		rank = herramienta.getImage("imagenes\\rank.jpg");
-		salir = herramienta.getImage("imagenes\\salir.jpg");
-		menu = herramienta.getImage("imagenes\\menu.jpg");
+		jugar = herramienta.getImage("imagenes\\jugar.png");
+		help = herramienta.getImage("imagenes\\ayuda.png");
+		rank = herramienta.getImage("imagenes\\ranking.png");
+		salir = herramienta.getImage("imagenes\\salir.png");
+		menu = herramienta.getImage("imagenes\\menu.png");
 		setVisible(true);
 	}
 
@@ -32,8 +32,8 @@ public class VistaMenuPrincipal extends Frame {
 		g.drawImage(menu, 400, 75, this);
 		g.drawImage(jugar, 479, 180, this);
 		g.drawImage(help, 479, 260, this);
-		g.drawImage(rank, 479, 340, this);
-		g.drawImage(salir, 479, 420, this);
+		g.drawImage(rank, 479, 420, this);
+		g.drawImage(salir, 479, 500, this);
 
 	}
 }

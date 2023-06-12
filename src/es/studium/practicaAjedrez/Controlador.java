@@ -5,8 +5,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.JOptionPane;
-
 public class Controlador implements WindowListener, MouseListener {
 
 	ModeloAjedrez modelo;
@@ -26,6 +24,8 @@ public class Controlador implements WindowListener, MouseListener {
 
 	int movimientosBlancas;
 	int movimientosNegras;
+
+	boolean jaque;
 
 	boolean gananBlancas;
 
@@ -48,8 +48,7 @@ public class Controlador implements WindowListener, MouseListener {
 
 		if (tablero != null && tablero.frame.isActive()) {
 			tablero.frame.setVisible(false);
-		}
-		else if (ranking != null && ranking.isActive()) {
+		} else if (ranking != null && ranking.isActive()) {
 			ranking.setVisible(false);
 		} else {
 			System.exit(0);
@@ -83,7 +82,7 @@ public class Controlador implements WindowListener, MouseListener {
 		int y = me.getY() - 30;
 
 		if (menuPrincipal.isActive()) {
-			if (x > 479 && x < 671 && y > 180 && y < 242) {
+			if (x > 479 && x < 671 && y > 140 && y < 202) {
 				tablero = new VistaTablero();
 				this.tablero.frame.addWindowListener(this);
 				this.tablero.frame.addMouseListener(this);
@@ -92,13 +91,13 @@ public class Controlador implements WindowListener, MouseListener {
 				movimientosBlancas = 0;
 				movimientosNegras = 0;
 
-			} else if (x > 479 && x < 671 && y > 260 && y < 322) {
+			} else if (x > 479 && x < 671 && y > 220 && y < 282) {
 				// Se abre fichero ayuda.
-			} else if (x > 479 && x < 671 && y > 340 && y < 402) {
+			} else if (x > 479 && x < 671 && y > 400 && y < 462) {
 				ranking = new VistaRanking();
 				modelo.rellenarRanking(ranking.txtRanking);
 				this.ranking.addWindowListener(this);
-			} else if (x > 479 && x < 671 && y > 420 && y < 482) {
+			} else if (x > 479 && x < 671 && y > 500 && y < 562) {
 				System.exit(0);
 			}
 
@@ -123,26 +122,12 @@ public class Controlador implements WindowListener, MouseListener {
 						&& (casillaSeleccionada.getFicha() == null || !casillaSeleccionada.getFicha().getEsBlanca()))
 						|| (!turnoBlancas && (casillaSeleccionada.getFicha() == null
 								|| casillaSeleccionada.getFicha().getEsBlanca()))) {
-					if (comprobarMovimientoValido(fichaMover, casillaSeleccionada)) {
+					if (comprobarMovimientoValido(fichaMover, casillaSeleccionada, jaque)) {
 						if (casillaSeleccionada.getFicha() != null) {
-							if (casillaSeleccionada.getFicha().getTipoFicha().equals("rey")) {
-								if (turnoBlancas) {
-									gananBlancas = true;
-								} else {
-									gananBlancas = false;
-								}
-								partidaTerminada = true;
-								String nombreGanador = JOptionPane.showInputDialog(null,
-										"Ganador, introduzca su nombre:", "Partida finalizada!", JOptionPane.QUESTION_MESSAGE);
-								if (turnoBlancas) {modelo.nuevoGanador(nombreGanador, movimientosBlancas);
-								} else {modelo.nuevoGanador(nombreGanador, movimientosNegras);}
-								
-
-							} else {
-								casillaSeleccionada.getFicha().morir();
-							}
+							casillaSeleccionada.getFicha().morir();
 						}
 						fichaMover.setCasillaActual(casillaSeleccionada);
+
 						// Cambiar turno:
 
 						if (!partidaTerminada) {
@@ -153,24 +138,31 @@ public class Controlador implements WindowListener, MouseListener {
 							} else {
 								turnoBlancas = true;
 								tablero.turno = "Blancas";
+								movimientosNegras++;
 							}
 
+							if (estaEnJaque(turnoBlancas)) {
+								jaque = true;
+								tablero.jaque = "Jaque";
+								
+							}
 							tablero.repaint();
 							fichaMover = null;
-							movimientosNegras++;
 						}
 					}
 				}
 			}
 		} else if (tablero.frame.isActive() && partidaTerminada) {
-
+			tablero.removeMouseListener(this);
 		}
 	}
 
-	private boolean comprobarMovimientoValido(Ficha fichaMover, Casilla casillaSeleccionada) {
+	private boolean comprobarMovimientoValido(Ficha fichaMover, Casilla casillaSeleccionada, boolean jaque) {
 
 		movimientoX = Math.abs(casillaSeleccionada.x - fichaMover.getCasillaActual().x);
 		movimientoY = Math.abs(casillaSeleccionada.y - fichaMover.getCasillaActual().y);
+
+		boolean check1 = false;
 
 		// MOVIMIENTO PEON:
 		if (fichaMover.getTipoFicha().equals("peon")) {
@@ -180,21 +172,21 @@ public class Controlador implements WindowListener, MouseListener {
 				// ocupada.
 				if (casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50 && movimientoX == 0
 						&& casillaSeleccionada.getFicha() == null) {
-					return true;
+					check1 = true;
 					// Si el movimiento es una casilla en diagonal hacia abajo, y esa casilla está
 					// ocupada por una pieza del color contrario.
 				} else if (casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50 && movimientoX == 50
 						&& casillaSeleccionada.getFicha() != null && !casillaSeleccionada.getFicha().getEsBlanca()) {
-					return true;
+					check1 = true;
 				}
 
 			} else {
 				if (casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50 && movimientoX == 0
 						&& casillaSeleccionada.getFicha() == null) {
-					return true;
+					check1 = true;
 				} else if (casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50 && movimientoX == 50
 						&& casillaSeleccionada.getFicha() != null && casillaSeleccionada.getFicha().getEsBlanca()) {
-					return true;
+					check1 = true;
 				}
 			}
 
@@ -208,14 +200,14 @@ public class Controlador implements WindowListener, MouseListener {
 				&& ((movimientoX == 0 && movimientoY != 0) || (movimientoX != 0 && movimientoY == 0))
 				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
 						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
-			return true;
+			check1 = true;
 		}
 
 		// MOVIMIENTO CABALLO:
 		else if (fichaMover.getTipoFicha().equals("caballo")
 				// Si el movimiento total de x e y suma 150 y no son 0 (movimiento en L):
 				&& movimientoX + movimientoY == 150 && movimientoX != 0 && movimientoY != 0) {
-			return true;
+			check1 = true;
 		}
 
 		// MOVIMIENTO ALFIL:
@@ -223,7 +215,7 @@ public class Controlador implements WindowListener, MouseListener {
 		// Si el movimiento de una y otra suman lo mismo (movimiento diagonal):
 				(movimientoX == movimientoY) && caminoVacio(fichaMover, fichaMover.getCasillaActual().x,
 						casillaSeleccionada.x, fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
-			return true;
+			check1 = true;
 
 			// MOVIMIENTO REINA BLANCA:
 		} else if (fichaMover.getTipoFicha().equals("reina") &&
@@ -232,7 +224,7 @@ public class Controlador implements WindowListener, MouseListener {
 						|| (movimientoX == movimientoY))
 				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
 						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
-			return true;
+			check1 = true;
 
 			// MOVIMIENTO REY BLANCO:
 		} else if (fichaMover.getTipoFicha().equals("rey") &&
@@ -242,8 +234,40 @@ public class Controlador implements WindowListener, MouseListener {
 						|| (movimientoX == movimientoY))
 				&& (movimientoX <= 50 && movimientoY <= 50) && caminoVacio(fichaMover, fichaMover.getCasillaActual().x,
 						casillaSeleccionada.x, fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
-			return true;
+			check1 = true;
 
+		}
+
+		// Simulación en la que si se hiciera el movimiento, el rey dejaría de estar en
+		// jaque:
+		if (!jaque && check1) {
+			return true;
+		} else if (jaque && check1) {
+			boolean devolver = false;
+			Casilla casillaAux = null;
+			Casilla casillaActual = fichaMover.getCasillaActual();
+
+			if (casillaSeleccionada.getFicha() != null) {
+				devolver = true;
+				casillaAux =  new Casilla(1000, 1000);
+				casillaSeleccionada.getFicha().setCasillaActual(casillaAux);
+			}
+
+			fichaMover.setCasillaActual(casillaSeleccionada);
+			boolean simulacionJaque = estaEnJaque(turnoBlancas);
+			fichaMover.setCasillaActual(casillaActual);
+
+			if (devolver) {
+				casillaAux.getFicha().setCasillaActual(casillaSeleccionada);
+				casillaAux = null;
+			}
+
+			if (simulacionJaque) {
+				return false;
+			} else {
+				tablero.jaque = "";
+				return true;
+			}
 		}
 
 		return false;
@@ -419,6 +443,33 @@ public class Controlador implements WindowListener, MouseListener {
 		}
 
 		return null;
+	}
+
+	private boolean estaEnJaque(boolean esBlanca) {
+
+		// Obtener la posición del rey del jugador correspondiente.
+		Casilla casillaRey;
+		if (turnoBlancas) {
+			casillaRey = tablero.reyBlanco.getCasillaActual();
+		} else {
+			casillaRey = tablero.reyNegro.getCasillaActual();
+		}
+
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+
+				// Verifica si la ficha existe y es del oponente
+				if (tablero.casillas[i][j].getFicha() != null
+						&& tablero.casillas[i][j].getFicha().getEsBlanca() != esBlanca) {
+					// Verifica si el movimiento de la ficha puede capturar al rey
+					if (comprobarMovimientoValido(tablero.casillas[i][j].getFicha(), casillaRey, jaque)) {
+						return true; // El rey está en jaque
+					}
+				}
+			}
+		}
+
+		return false; // El rey no está en jaque
 	}
 
 	@Override

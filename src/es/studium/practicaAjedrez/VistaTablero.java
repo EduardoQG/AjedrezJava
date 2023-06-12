@@ -3,9 +3,12 @@ package es.studium.practicaAjedrez;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,15 +26,20 @@ public class VistaTablero extends JPanel {
 	JFrame frame;
 	String turno;
 	String jaque;
+	Image fondo;
+	Toolkit herramienta;
 
 	public VistaTablero() {
 		frame = new JFrame();
 		frame.setSize(900, 700);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
+		herramienta = getToolkit();
+		fondo = herramienta.getImage("imagenes\\fondo.jpg");
+
 		turno = "Blancas";
 		jaque = "";
-		
+
 		casillas = new Casilla[8][8];
 
 		int x = 100, y = 100;
@@ -56,7 +64,7 @@ public class VistaTablero extends JPanel {
 			peonBlanco1 = new Ficha(ImageIO.read(archivoImgPeonBlanco), "peon", true);
 			// Se sitúa la ficha en la casilla inicial.
 			peonBlanco1.setCasillaActual(casillas[1][0]);
-			
+
 			peonBlanco2 = new Ficha(ImageIO.read(archivoImgPeonBlanco), "peon", true);
 			peonBlanco2.setCasillaActual(casillas[1][1]);
 			peonBlanco3 = new Ficha(ImageIO.read(archivoImgPeonBlanco), "peon", true);
@@ -133,16 +141,15 @@ public class VistaTablero extends JPanel {
 			File archivoImgReinaNegra = new File("imagenes/reinaNegra.png");
 			reinaNegra = new Ficha(ImageIO.read(archivoImgReinaNegra), "reina", false);
 			reinaNegra.setCasillaActual(casillas[7][3]);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		frame.getContentPane().add(this);
 		frame.setBackground(Color.LIGHT_GRAY);
 
 		// Crear las casillas:
-		
 
 		frame.setVisible(true);
 	}
@@ -155,7 +162,25 @@ public class VistaTablero extends JPanel {
 		 * cuadrados negros de 50x50 en las filas impares. El segundo bucle hace lo
 		 * mismo pero en las filas pares.
 		 */
+		g.drawImage(fondo, 0, -21, this);
 		g.setColor(new Color(160, 82, 45));
+
+		g.drawString("A", 120, 95);
+		g.drawString("B", 170, 95);
+		g.drawString("C", 220, 95);
+		g.drawString("D", 270, 95);
+		g.drawString("E", 320, 95);
+		g.drawString("F", 370, 95);
+		g.drawString("G", 420, 95);
+		g.drawString("H", 470, 95);
+		g.drawString("8", 90, 125);
+		g.drawString("7", 90, 175);
+		g.drawString("6", 90, 225);
+		g.drawString("5", 90, 275);
+		g.drawString("4", 90, 325);
+		g.drawString("3", 90, 375);
+		g.drawString("2", 90, 425);
+		g.drawString("1", 90, 475);
 
 		g.fillRect(100, 100, 400, 400);
 		for (int i = 100; i <= 400; i += 100) {
@@ -169,34 +194,33 @@ public class VistaTablero extends JPanel {
 			}
 		}
 
-		g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(600, 250, 200, 500);
-		
-        BufferedImage buffer = new BufferedImage(200, 100, BufferedImage.TYPE_INT_ARGB);
-        Graphics g2 = buffer.getGraphics();
-        
-        Font font = new Font("Serif", Font.BOLD, 24);
-        g2.setFont(font);
-        
-        g2.setColor(Color.BLACK);
-        g2.drawString("Turno " + turno, 0, 30);
-        g.drawImage(buffer, 600, 250, null);
-        
-        BufferedImage buffer2 = new BufferedImage(200, 100, BufferedImage.TYPE_INT_ARGB);
-        Graphics g3 = buffer2.getGraphics();
+		g.setColor(new Color(250, 247, 242));
+		g.fillRect(600, 250, 200, 100);
 
-        Font font2 = new Font("Serif", Font.ITALIC, 22);
-        g3.setFont(font2);
+		BufferedImage buffer = new BufferedImage(200, 100, BufferedImage.TYPE_INT_ARGB);
+		Graphics g2 = buffer.getGraphics();
 
-        g3.setColor(Color.BLACK);
-        g3.drawString(jaque, 0, 30);
-        g.drawImage(buffer2, 638, 300, null);
-     
-        
+		Font font = new Font("Serif", Font.BOLD, 24);
+		g2.setFont(font);
+
+		g2.setColor(Color.BLACK);
+		g2.drawString("Turno " + turno, 0, 30);
+		g.drawImage(buffer, 600, 250, null);
+
+		BufferedImage buffer2 = new BufferedImage(200, 100, BufferedImage.TYPE_INT_ARGB);
+		Graphics g3 = buffer2.getGraphics();
+
+		Font font2 = new Font("Serif", Font.ITALIC, 22);
+		g3.setFont(font2);
+
+		g3.setColor(Color.BLACK);
+		g3.drawString(jaque, 0, 30);
+		g.drawImage(buffer2, 638, 300, null);
+
 		// SITUAR FICHAS: se pinta la imagen en las coordenadas de su casilla actual.
-		
+
 		// FICHAS BLANCAS:
-		
+
 		g.drawImage(peonBlanco1.getImagenFicha(), (peonBlanco1.getCasillaActual().x + 5),
 				peonBlanco1.getCasillaActual().y, this);
 
@@ -221,8 +245,8 @@ public class VistaTablero extends JPanel {
 		g.drawImage(peonBlanco8.getImagenFicha(), (peonBlanco8.getCasillaActual().x + 5),
 				peonBlanco8.getCasillaActual().y, this);
 
-		g.drawImage(torreBlanca1.getImagenFicha(), (torreBlanca1.getCasillaActual().x),
-				torreBlanca1.getCasillaActual().y, this);
+		g.drawImage(torreBlanca1.getImagenFicha(), (torreBlanca1.getCasillaActual().x + 5),
+				torreBlanca1.getCasillaActual().y + 5, this);
 
 		g.drawImage(torreBlanca2.getImagenFicha(), (torreBlanca2.getCasillaActual().x),
 				torreBlanca2.getCasillaActual().y, this);
@@ -293,4 +317,5 @@ public class VistaTablero extends JPanel {
 		g.drawImage(reinaNegra.getImagenFicha(), (reinaNegra.getCasillaActual().x), reinaNegra.getCasillaActual().y,
 				this);
 	}
+
 }
