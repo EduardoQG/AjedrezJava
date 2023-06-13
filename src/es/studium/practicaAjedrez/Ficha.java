@@ -59,7 +59,6 @@ public class Ficha {
 	public void morir () {
 		imagenFicha = null;
 		this.setViva(false);
-		this.setCasillaActual(null);
 	}
 
 	

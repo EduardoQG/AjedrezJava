@@ -1,11 +1,19 @@
 package es.studium.practicaAjedrez;
 
 import java.awt.TextArea;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class ModeloAjedrez {
 
@@ -45,7 +53,7 @@ public class ModeloAjedrez {
 	
 	public void rellenarRanking (TextArea txtRanking) {
 		
-		sentencia = "select nombreGanador, numMovimientosGanador from partidasajedrez.partida";
+		sentencia = "select nombreGanador, numMovimientosGanador from partidasajedrez.partida order by 2";
 		
 		try {
 			statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -94,5 +102,17 @@ public class ModeloAjedrez {
 		return casillaSeleccionada;
 	}
 
-		
+
+	public void reproducirSonido() {
+	    try {
+	        File archivoSonido = new File("sonidos\\mov.wav");
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(archivoSonido);
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        clip.start();
+	    } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+	        e.printStackTrace();
+	    }
+
+	}
 }
