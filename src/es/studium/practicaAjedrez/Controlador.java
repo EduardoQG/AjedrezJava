@@ -168,7 +168,8 @@ public class Controlador implements WindowListener, MouseListener {
 		movimientoX = Math.abs(casillaSeleccionada.x - fichaMover.getCasillaActual().x);
 		movimientoY = Math.abs(casillaSeleccionada.y - fichaMover.getCasillaActual().y);
 
-
+		boolean check1 = false;
+		
 		// MOVIMIENTO PEON:
 		if (fichaMover.getTipoFicha().equals("peon")) {
 
@@ -177,21 +178,21 @@ public class Controlador implements WindowListener, MouseListener {
 				// ocupada.
 				if (casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50 && movimientoX == 0
 						&& casillaSeleccionada.getFicha() == null) {
-					return true;
+					check1 = true;
 					// Si el movimiento es una casilla en diagonal hacia abajo, y esa casilla está
 					// ocupada por una pieza del color contrario.
 				} else if (casillaSeleccionada.y == fichaMover.getCasillaActual().y + 50 && movimientoX == 50
 						&& casillaSeleccionada.getFicha() != null && !casillaSeleccionada.getFicha().getEsBlanca()) {
-					return true;
+					check1 = true;
 				}
 
 			} else {
 				if (casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50 && movimientoX == 0
 						&& casillaSeleccionada.getFicha() == null) {
-					return true;
+					check1 = true;
 				} else if (casillaSeleccionada.y == fichaMover.getCasillaActual().y - 50 && movimientoX == 50
 						&& casillaSeleccionada.getFicha() != null && casillaSeleccionada.getFicha().getEsBlanca()) {
-					return true;
+					check1 = true;
 				}
 			}
 
@@ -205,14 +206,14 @@ public class Controlador implements WindowListener, MouseListener {
 				&& ((movimientoX == 0 && movimientoY != 0) || (movimientoX != 0 && movimientoY == 0))
 				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
 						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
-			return true;
+			check1 = true;
 		}
 
 		// MOVIMIENTO CABALLO:
 		else if (fichaMover.getTipoFicha().equals("caballo")
 				// Si el movimiento total de x e y suma 150 y no son 0 (movimiento en L):
 				&& movimientoX + movimientoY == 150 && movimientoX != 0 && movimientoY != 0) {
-			return true;
+			check1 = true;
 		}
 
 		// MOVIMIENTO ALFIL:
@@ -220,7 +221,7 @@ public class Controlador implements WindowListener, MouseListener {
 		// Si el movimiento de una y otra suman lo mismo (movimiento diagonal):
 				(movimientoX == movimientoY) && caminoVacio(fichaMover, fichaMover.getCasillaActual().x,
 						casillaSeleccionada.x, fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
-			return true;
+			check1 = true;
 
 			// MOVIMIENTO REINA BLANCA:
 		} else if (fichaMover.getTipoFicha().equals("reina") &&
@@ -229,7 +230,7 @@ public class Controlador implements WindowListener, MouseListener {
 						|| (movimientoX == movimientoY))
 				&& caminoVacio(fichaMover, fichaMover.getCasillaActual().x, casillaSeleccionada.x,
 						fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
-			return true;
+			check1 = true;
 
 			// MOVIMIENTO REY BLANCO:
 		} else if (fichaMover.getTipoFicha().equals("rey") &&
@@ -239,10 +240,10 @@ public class Controlador implements WindowListener, MouseListener {
 						|| (movimientoX == movimientoY))
 				&& (movimientoX <= 50 && movimientoY <= 50) && caminoVacio(fichaMover, fichaMover.getCasillaActual().x,
 						casillaSeleccionada.x, fichaMover.getCasillaActual().y, casillaSeleccionada.y)) {
-			return true;
+			check1 = true;
 
 		}
-		/*
+		
 		// Simulación en la que si se hiciera el movimiento, el rey dejaría de estar en
 		// jaque:
 		if (!jaque && check1) {
@@ -273,7 +274,7 @@ public class Controlador implements WindowListener, MouseListener {
 				tablero.jaque = "";
 				return true;
 			}
-		}*/
+		}
 
 		return false;
 	}
